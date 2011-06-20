@@ -2,13 +2,12 @@
 
 class block_lesson_essay_feedback extends block_base {
     function init() {
-        $this->title = get_string('blockname', 'block_lesson_essay_feedback');
-        $this->version = 2011061800;
+        $this->title = get_string('pluginname', 'block_lesson_essay_feedback');
     }
 
     function get_content() {
-        global $USER, $CFG, $COURSE;
-        $this->course = $COURSE;
+        global $USER, $CFG, $DB;
+
         if ($this->content !== NULL) {
             return $this->content;
         }
@@ -22,22 +21,21 @@ class block_lesson_essay_feedback extends block_base {
         }
 
         $userid = $USER->id;
-        $lessons = get_records_select_menu('lesson', 'course='.$this->course->id,'name','id,name');
-        
+        $lessons = $DB->get_records_menu('lesson', array('course' => $this->page->course->id), '', 'id, name');
         if(!empty($lessons)) {
         	$lessonidhasessays = array();
             foreach ($lessons as $lessonid => $id) {
-            	//$lessonretake = get_record_select("lesson", "id = $lessonid", null, $fields='retake');
+            	$lessonretake = $DB->get_record_select("lesson", "id = $lessonid", null, $fields='retake');
             	$sql = 'SELECT COUNT(*) FROM '.$CFG->prefix.'lesson_pages WHERE lessonid = '.$lessonid.' AND qtype = 10';
             	$select = 'lessonid = '.$lessonid.' AND qtype = 10';
-	            $nbessaysinlesson = count_records_select('lesson_pages', $select);
+	            $nbessaysinlesson = $DB->count_records_select('lesson_pages', $select);
             	$cm = get_coursemodule_from_instance("lesson", $lessonid);
 	            $cmid = $cm->id;
-		        if ($useranswers = get_records_select("lesson_attempts",  "lessonid = $lessonid AND userid = $userid")) {
+		        if ($useranswers = $DB->get_records_select("lesson_attempts",  "lessonid = $lessonid AND userid = $userid")) {
 			        foreach ($useranswers as $useranswer) {
 			        	
 			        	$sql = 'SELECT qtype, contents FROM '.$CFG->prefix.'lesson_pages WHERE id = '.$useranswer->pageid;
-		                if ($record = get_record_sql($sql)) {
+		                if ($record = $DB->get_record_sql($sql)) {
 				            if ($record->qtype == 10) {
 				            	
                                 if (!in_array($lessonid,$lessonidhasessays)) {

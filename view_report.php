@@ -52,7 +52,7 @@ if ($useranswers = get_records_select("lesson_attempts",  "lessonid = $lessonid 
                     }
 
                     if ($lessonretake->retake) {
-                        echo '<strong>'.get_string('attempt', 'lesson', $useranswer->retry + 1).'</strong>';
+                        echo '<h5>'.get_string('attempt', 'lesson', $useranswer->retry + 1).'</h5>';
                     }
 
                     $message  = get_string('yourresponse', 'block_lesson_essay_feedback');

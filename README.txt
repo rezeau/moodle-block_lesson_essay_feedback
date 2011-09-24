@@ -9,8 +9,7 @@ If you downloaded this zip archive from the new moodle.org plugins page
 ---
 If you downloaded this zip archive from https://github.com/rezeau
 1.- Unzip the zip archive you downloaded from github to your local computer.
-2.- This will give you a folder named something like "rezeau-moodle19_block_lesson_essay_feedback-aa0b1c2" (for moodle 1.9) or "rezeau-moodle20_block_lesson_essay_feedback-aa0b1c2" (for moodle 2.x).
-The end of the name may vary.
+2.- This will give you a folder named something like "rezeau-moodle_block_lesson_essay_feedback-aa0b1c2". The end of the name may vary.
 3.- ***Rename*** that folder to "lesson_essay_feedback".
 ---
 4.- Upload the "lesson_essay_feedback" folder to your moodle/blocks/ folder.

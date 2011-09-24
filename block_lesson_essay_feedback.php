@@ -31,34 +31,36 @@ class block_lesson_essay_feedback extends block_base {
 	            $nbessaysinlesson = $DB->count_records_select('lesson_pages', $select);
             	$cm = get_coursemodule_from_instance("lesson", $lessonid);
 	            $cmid = $cm->id;
-		        if ($useranswers = $DB->get_records_select("lesson_attempts",  "lessonid = $lessonid AND userid = $userid")) {
-			        foreach ($useranswers as $useranswer) {
-			        	
-			        	$sql = 'SELECT qtype, contents FROM '.$CFG->prefix.'lesson_pages WHERE id = '.$useranswer->pageid;
-		                if ($record = $DB->get_record_sql($sql)) {
-				            if ($record->qtype == 10) {
-				            	
-                                if (!in_array($lessonid,$lessonidhasessays)) {
-                                    $lessonidhasessays [] = $lessonid;
-                                    $a->lessonname = $lessons[$lessonid];
-                                    $a->nbessaysinlesson = $nbessaysinlesson;
-                                    if ($nbessaysinlesson == 1) {
-                                    	$a->essay = get_string('essay', 'lesson');
-                                    } else {
-                                    	$a->essay = get_string('essays', 'lesson');
-                                    }
-                                    $this->content->text .= '<li><a title="'.get_string('clicktosee', 'block_lesson_essay_feedback', $a).'" href='
-							            .$CFG->wwwroot.'/blocks/lesson_essay_feedback/view_report.php?id='.$cmid.'&amp;lessonid='.$lessonid.'>'
-							            .$a->lessonname.' ['.$nbessaysinlesson.']'.
-							            '</a></li>'; 
-                                }				            	
-                            }
-		                }
-			        }
-                }
+		        if ($cm->visible) {
+		            if ($useranswers = $DB->get_records_select("lesson_attempts",  "lessonid = $lessonid AND userid = $userid")) {
+				        foreach ($useranswers as $useranswer) {
+				        	
+				        	$sql = 'SELECT qtype, contents FROM '.$CFG->prefix.'lesson_pages WHERE id = '.$useranswer->pageid;
+			                if ($record = $DB->get_record_sql($sql)) {
+					            if ($record->qtype == 10) {
+					            	
+	                                if (!in_array($lessonid,$lessonidhasessays)) {
+	                                    $lessonidhasessays [] = $lessonid;
+	                                    $a->lessonname = $lessons[$lessonid];
+	                                    $a->nbessaysinlesson = $nbessaysinlesson;
+	                                    if ($nbessaysinlesson == 1) {
+	                                    	$a->essay = get_string('essay', 'lesson');
+	                                    } else {
+	                                    	$a->essay = get_string('essays', 'lesson');
+	                                    }
+	                                    $this->content->text .= '<li><a title="'.get_string('clicktosee', 'block_lesson_essay_feedback', $a).'" href='
+								            .$CFG->wwwroot.'/blocks/lesson_essay_feedback/view_report.php?id='.$cmid.'&amp;lessonid='.$lessonid.'>'
+								            .$a->lessonname.' ['.$nbessaysinlesson.']'.
+								            '</a></li>'; 
+	                                }				            	
+	                            }
+			                }
+				        }
+	                }
+		        }
             }
         }
-        return $this->content;//
+        return $this->content;
     }
 
     function instance_allow_multiple() {

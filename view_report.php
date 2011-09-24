@@ -81,8 +81,6 @@ if ($useranswers = get_records_select("lesson_attempts",  "lessonid = $lessonid 
         
                         // Set rest of the message values
                         $comment  = $essayinfo->response;
-                        //$message  = get_string('feedbackmessage', 'block_lesson_essay_feedback', $a);
-                        
                         echo '<div class="generalbox generalboxcontent">';
                         echo '<h5>'.get_string('graderscomments', 'block_lesson_essay_feedback').'</h5>';
                         echo '<blockquote>'.$essayinfo->response.'</blockquote>';

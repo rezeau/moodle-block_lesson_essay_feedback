@@ -3,7 +3,7 @@
 class block_lesson_essay_feedback extends block_base {
     function init() {
         $this->title = get_string('blockname', 'block_lesson_essay_feedback');
-        $this->version = 2011061800;
+        $this->version = 2011092400;
     }
 
     function get_content() {

@@ -41,6 +41,7 @@ class block_lesson_essay_feedback extends block_base {
 					            	
 	                                if (!in_array($lessonid,$lessonidhasessays)) {
 	                                    $lessonidhasessays [] = $lessonid;
+	                                    $a = new stdClass();
 	                                    $a->lessonname = $lessons[$lessonid];
 	                                    $a->nbessaysinlesson = $nbessaysinlesson;
 	                                    if ($nbessaysinlesson == 1) {

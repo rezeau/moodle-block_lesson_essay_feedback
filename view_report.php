@@ -85,7 +85,7 @@ if ($useranswers = $DB->get_records_select("lesson_attempts",  "lessonid = $less
 		                $grades = $DB->get_records('lesson_grades', array("lessonid"=>$lesson->id, "userid"=>$userid), 'completed', '*', $useranswer->retry, 1);
 		                $grade  = current($grades);
 		                $newgrade = $grade->grade;
-		
+		                $a = new stdClass();
 		                // Set the points
 		                if ($lesson->custom) {
 		                    $a->earned = $essayinfo->score;

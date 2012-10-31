@@ -1,6 +1,6 @@
-19:00 24/09/2011
+17:30 31/10/2012
 -------------------------------------------
-How to install on a moodle 1.9, 2.0 or 2.1 site.
+How to install on a moodle 2.2 or 2.3 site.
 -------------------------------------------
 If you downloaded this zip archive from the new moodle.org plugins page
 1.- Unzip the zip archive to your local computer.

@@ -40,75 +40,76 @@ echo $OUTPUT->heading(get_string('graderscommentsandscore', 'block_lesson_essay_
 
 if ($useranswers = $DB->get_records_select("lesson_attempts",  "lessonid = $lessonid AND userid = $userid", null, 'pageid,timeseen ASC')) {
     $lessonretake = $DB->get_record_select("lesson", "id = $lessonid", null, $fields='retake');
-    $i = 0; $nbessays = 0; $oldretry = 0; $boxopen = false;
-    foreach ($useranswers as $useranswer) {
-    	if ($oldretry > 0 && $lessonretake->retake && $oldretry == $useranswer->retry) {
-    		// to skip potential essay attempts made and recorded but then  student quitted lesson before completion
-    		// there must be a more elegant solution!
-    	} else {
-	    	$sql = 'SELECT qtype, id, contents, contentsformat FROM '.$CFG->prefix.'lesson_pages WHERE id = '.$useranswer->pageid;
-	        if ($question = $DB->get_record_sql($sql)) {
-	        	if ($question->qtype == 10) {
-	                $essayinfo = unserialize ($useranswer->useranswer); 
+    $i = 0; $nbessays = 0; $boxopen = false;
 
-	                if ($useranswer->retry == 0) {
-						if ($boxopen) {
-							echo $OUTPUT->box_end('generalbox');
-						}
-	                    echo $OUTPUT->box_start('generalbox');
-	                    $boxopen = true;
-	                    $nbessays ++;
-						echo '<h3>'.get_string('essayprompt', 'block_lesson_essay_feedback', $nbessays).'</h3><blockquote>';
-			            $context = get_context_instance(CONTEXT_MODULE, $PAGE->cm->id);
-			            $contents = file_rewrite_pluginfile_urls($question->contents, 'pluginfile.php', $context->id, 'mod_lesson', 'page_contents', 
-			                $question->id);
-			            echo format_text($contents, $question->contentsformat, array('context'=>$context, 'noclean'=>true));
-			            echo '</blockquote>';
-	                }
+    // get the current user's latest grade date for this lesson
+    // to find out if there is currently one attempt pending in an unfinished lesson
+    $params = array ("userid" => $USER->id, "lessonid" => $lesson->id);
+    if ($rs = $DB->get_record_sql('SELECT MAX(completed) AS lastgraded FROM {lesson_grades} WHERE userid = :userid
+            AND lessonid = :lessonid ', $params)) {
+            $lastgraded = $rs->lastgraded;
+    }
 
-	                if ($lessonretake->retake) {
-		                echo '<h4>'.get_string('attempt', 'lesson', $useranswer->retry + 1).'</h4>';
-	                }
-
-	                echo '<h5>'.get_string('yourresponse', 'block_lesson_essay_feedback').'</h5>';
-	                
-	                // display student's answer exactly as it was typed in the HTML editor, including smileys, images, etc.
-	                echo('<blockquote>'.format_text($essayinfo->answer, FORMAT_HTML).'</blockquote>');
-	                
-	                if ($essayinfo->graded) {
-	                	$sql = 'SELECT score FROM '.$CFG->prefix.'lesson_answers WHERE pageid = '.$useranswer->pageid;
-	                	if ($score = $DB->get_record_sql($sql)) {
-	                		$maxscore = $score->score;
-	                	}                
-		
-		                // Set the grade
-		                $grades = $DB->get_records('lesson_grades', array("lessonid"=>$lesson->id, "userid"=>$userid), 'completed', '*', $useranswer->retry, 1);
-		                $grade  = current($grades);
-		                $newgrade = $grade->grade;
-		                $a = new stdClass();
-		                // Set the points
-		                if ($lesson->custom) {
-		                    $a->earned = $essayinfo->score;
-		                    $a->outof  = $maxscore;
-		                } else {
-		                    $a->earned = $essayinfo->score;
-		                    $a->outof  = 1;
-		                }
-		
-		                // Set rest of the message values
-		                $comment  = $essayinfo->response;
-		                echo '<h5>'.get_string('graderscomments', 'block_lesson_essay_feedback').'</h5>';
-                        echo '<blockquote>'.$essayinfo->response.'</blockquote>';
-                        echo '<p>'.get_string('score', 'block_lesson_essay_feedback', $a).'<br />';
-                        echo ''.get_string('newgrade', 'block_lesson_essay_feedback', $newgrade).'</p>';                        
-	                } else {
-	                    echo '<p><b><em>'.get_string('defaultessayresponse', 'lesson').'</em></b></p>';
-	                }                
-	            }
-	        }
-	        $i++;
-	        $oldretry = $useranswer->retry;
-	    }
+    foreach ($useranswers as $useranswer) {        
+        $sql = 'SELECT qtype, id, contents, contentsformat FROM '.$CFG->prefix.'lesson_pages WHERE id = '.$useranswer->pageid;
+        if ($question = $DB->get_record_sql($sql)) {
+            if ($question->qtype == 10) {
+                $essayinfo = unserialize ($useranswer->useranswer); 
+                if ($useranswer->retry == 0) {
+                    if ($boxopen) {
+                        echo $OUTPUT->box_end('generalbox');
+                    }
+                    echo $OUTPUT->box_start('generalbox');
+                    $boxopen = true;
+                    $nbessays ++;
+                    echo '<h3>'.get_string('essayprompt', 'block_lesson_essay_feedback', $nbessays).'</h3><blockquote>';
+                    $context = get_context_instance(CONTEXT_MODULE, $PAGE->cm->id);
+                    $contents = file_rewrite_pluginfile_urls($question->contents, 'pluginfile.php', $context->id, 'mod_lesson', 'page_contents', 
+                    $question->id);
+                    echo format_text($contents, $question->contentsformat, array('context'=>$context, 'noclean'=>true));
+                    echo '</blockquote>';
+                }
+                if ($lessonretake->retake) {
+                    echo '<h4>'.get_string('attempt', 'lesson', $useranswer->retry + 1).'</h4>';
+                }
+                echo '<h5>'.get_string('yourresponse', 'block_lesson_essay_feedback').'</h5>';               
+                // display student's answer exactly as it was typed in the HTML editor, including smileys, images, etc.
+                echo('<blockquote>'.format_text($essayinfo->answer, FORMAT_HTML).'</blockquote>');
+                if ($essayinfo->graded) {
+                    $sql = 'SELECT score FROM '.$CFG->prefix.'lesson_answers WHERE pageid = '.$useranswer->pageid;
+                    if ($score = $DB->get_record_sql($sql)) {
+                        $maxscore = $score->score;
+                    }                
+                    // Set the grade
+                    $grades = $DB->get_records('lesson_grades', array("lessonid"=>$lesson->id, "userid"=>$userid), 'completed', '*', $useranswer->retry, 1);
+                    $grade  = current($grades);
+                    $newgrade = $grade->grade;
+                    $a = new stdClass();
+                    // Set the points
+                    if ($lesson->custom) {
+                        $a->earned = $essayinfo->score;
+                        $a->outof  = $maxscore;
+                    } else {
+                        $a->earned = $essayinfo->score;
+                        $a->outof  = 1;
+                    }
+                    // Set rest of the message values
+                    $comment  = $essayinfo->response;
+                    echo '<h5>'.get_string('graderscomments', 'block_lesson_essay_feedback').'</h5>';
+                    echo '<blockquote>'.$essayinfo->response.'</blockquote>';
+                    echo '<p>'.get_string('score', 'block_lesson_essay_feedback', $a).'<br />';
+                    echo ''.get_string('newgrade', 'block_lesson_essay_feedback', $newgrade).'</p>';
+                } else {
+                    if ($useranswer->timeseen > $lastgraded) {
+                        echo '<p><b><em>'.get_string('incompletelesson', 'block_lesson_essay_feedback', userdate($useranswer->timeseen)).'</em></b></p>';
+                    } else {
+                        echo '<p><b><em>'.get_string('defaultessayresponse', 'lesson').'</em></b></p>';
+                    }
+                }                
+            }
+        }
+        $i++;
+        $oldretry = $useranswer->retry;
     }
     echo $OUTPUT->box_end('generalbox');
 }

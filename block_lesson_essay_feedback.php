@@ -23,42 +23,38 @@ class block_lesson_essay_feedback extends block_base {
         $userid = $USER->id;
         $lessons = $DB->get_records_menu('lesson', array('course' => $this->page->course->id), '', 'id, name');
         if(!empty($lessons)) {
-        	$lessonidhasessays = array();
+            $lessonidhasessays = array();
             foreach ($lessons as $lessonid => $id) {
-            	$lessonretake = $DB->get_record_select("lesson", "id = $lessonid", null, $fields='retake');
-            	$sql = 'SELECT COUNT(*) FROM '.$CFG->prefix.'lesson_pages WHERE lessonid = '.$lessonid.' AND qtype = 10';
-            	$select = 'lessonid = '.$lessonid.' AND qtype = 10';
-	            $nbessaysinlesson = $DB->count_records_select('lesson_pages', $select);
-            	$cm = get_coursemodule_from_instance("lesson", $lessonid);
-	            $cmid = $cm->id;
-		        if ($cm->visible) {
-		            if ($useranswers = $DB->get_records_select("lesson_attempts",  "lessonid = $lessonid AND userid = $userid")) {
-				        foreach ($useranswers as $useranswer) {
-				        	
-				        	$sql = 'SELECT qtype, contents FROM '.$CFG->prefix.'lesson_pages WHERE id = '.$useranswer->pageid;
-			                if ($record = $DB->get_record_sql($sql)) {
-					            if ($record->qtype == 10) {
-					            	
-	                                if (!in_array($lessonid,$lessonidhasessays)) {
-	                                    $lessonidhasessays [] = $lessonid;
-	                                    $a = new stdClass();
-	                                    $a->lessonname = $lessons[$lessonid];
-	                                    $a->nbessaysinlesson = $nbessaysinlesson;
-	                                    if ($nbessaysinlesson == 1) {
-	                                    	$a->essay = get_string('essay', 'lesson');
-	                                    } else {
-	                                    	$a->essay = get_string('essays', 'lesson');
-	                                    }
-	                                    $this->content->text .= '<li><a title="'.get_string('clicktosee', 'block_lesson_essay_feedback', $a).'" href='
-								            .$CFG->wwwroot.'/blocks/lesson_essay_feedback/view_report.php?id='.$cmid.'&amp;lessonid='.$lessonid.'>'
-								            .$a->lessonname.' ['.$nbessaysinlesson.']'.
-								            '</a></li>'; 
-	                                }				            	
-	                            }
-			                }
-				        }
-	                }
-		        }
+                $select = 'lessonid = '.$lessonid.' AND qtype = 10';
+                $nbessaysinlesson = $DB->count_records_select('lesson_pages', $select);
+                $cm = get_coursemodule_from_instance("lesson", $lessonid);
+                $cmid = $cm->id;
+                if ($cm->visible) {
+                    if ($useranswers = $DB->get_records_select("lesson_attempts", "lessonid = $lessonid AND userid = $userid")) {
+                        foreach ($useranswers as $useranswer) {
+                            $sql = 'SELECT qtype, contents FROM '.$CFG->prefix.'lesson_pages WHERE id = '.$useranswer->pageid;
+                            if ($record = $DB->get_record_sql($sql)) {
+                                if ($record->qtype == 10) {
+                                    if (!in_array($lessonid,$lessonidhasessays)) {
+                                        $lessonidhasessays [] = $lessonid;
+                                        $a = new stdClass();
+                                        $a->lessonname = $lessons[$lessonid];
+                                        $a->nbessaysinlesson = $nbessaysinlesson;
+                                        if ($nbessaysinlesson == 1) {
+                                            $a->essay = get_string('essay', 'lesson');
+                                        } else {
+                                            $a->essay = get_string('essays', 'lesson');
+                                        }
+                                        $this->content->text .= '<li><a title="'.get_string('clicktosee', 'block_lesson_essay_feedback', $a).'" href='
+                                            .$CFG->wwwroot.'/blocks/lesson_essay_feedback/view_report.php?id='.$cmid.'&amp;lessonid='.$lessonid.'>'
+                                            .$a->lessonname.' ['.$nbessaysinlesson.']'.
+                                            '</a></li>'; 
+                                    }                                
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
         return $this->content;
@@ -68,4 +64,7 @@ class block_lesson_essay_feedback extends block_base {
         return FALSE;
     }
 
+    function applicable_formats() {
+        return array('all'=>true);
+    }
 }

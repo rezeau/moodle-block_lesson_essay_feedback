@@ -4,14 +4,14 @@
 require_once("../../config.php");
 require_once($CFG->dirroot.'/mod/lesson/locallib.php');
 
-$id = required_param('id', PARAM_INT);      // Course Module ID
+$cmid = required_param('cmid', PARAM_INT);      // Course Module ID
 $lessonid = required_param('lessonid', PARAM_INT);      // lesson ID
 
-$url = new moodle_url('/mod/lesson_essay_feedback/view_report.php', array('id'=>$id));
+$url = new moodle_url('/mod/lesson_essay_feedback/view_report.php', array('id'=>$cmid));
 
 $PAGE->set_url($url);
 
-if (! $cm = get_coursemodule_from_id('lesson', $id)) {
+if (! $cm = get_coursemodule_from_id('lesson', $cmid)) {
     print_error('invalidcoursemodule');
 }
 
@@ -102,6 +102,9 @@ if ($useranswers = $DB->get_records_select("lesson_attempts",  "lessonid = $less
                 } else {
                     if ($useranswer->timeseen > $lastgraded) {
                         echo '<p><b><em>'.get_string('incompletelesson', 'block_lesson_essay_feedback', userdate($useranswer->timeseen)).'</em></b></p>';
+                        $link = '<a href="'.$CFG->wwwroot.'/mod/lesson/view.php?id='.$cmid.'">'.format_string($lesson->name,true).'</a>';
+                        $link = get_string('finish', 'block_lesson_essay_feedback', $link);
+                        echo $link;
                     } else {
                         echo '<p><b><em>'.get_string('defaultessayresponse', 'lesson').'</em></b></p>';
                     }

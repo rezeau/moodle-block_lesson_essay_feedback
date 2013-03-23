@@ -46,7 +46,7 @@ class block_lesson_essay_feedback extends block_base {
                                             $a->essay = get_string('essays', 'lesson');
                                         }
                                         $this->content->text .= '<li><a title="'.get_string('clicktosee', 'block_lesson_essay_feedback', $a).'" href='
-                                            .$CFG->wwwroot.'/blocks/lesson_essay_feedback/view_report.php?id='.$cmid.'&amp;lessonid='.$lessonid.'>'
+                                            .$CFG->wwwroot.'/blocks/lesson_essay_feedback/view_report.php?cmid='.$cmid.'&amp;lessonid='.$lessonid.'>'
                                             .$a->lessonname.' ['.$nbessaysinlesson.']'.
                                             '</a></li>'; 
                                     }                                

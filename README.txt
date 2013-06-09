@@ -1,6 +1,5 @@
-17:30 31/10/2012
 -------------------------------------------
-How to install on a moodle 2.2 or 2.3 site.
+How to install on a moodle 2.x site.
 -------------------------------------------
 If you downloaded this zip archive from the new moodle.org plugins page
 1.- Unzip the zip archive to your local computer.

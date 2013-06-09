@@ -19,12 +19,14 @@
  *
  * @package    block
  * @subpackage lesson_essay_feedback
- * @copyright  Joseph Rézeau - moodle@rezeau.org
+ * @copyright  Joseph RÃ©zeau - moodle@rezeau.org
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2012111300;        // The current plugin version (Date: YYYYMMDDXX)
-$plugin->requires  = 2011120500;        // Requires this Moodle version
-$plugin->component = 'block_lesson_essay_feedback';  // Full name of the plugin (used for diagnostics)
+$plugin->version   = 2013060900;        // The current plugin version (Date: YYYYMMDDXX)
+$plugin->requires  = 2013051400;        // Requires this Moodle version
+$plugin->component = 'block_lesson_essay_feedback';  // Full name of the plugin (used for diagnostics).
+$plugin->release = '2.5.0';
+$plugin->maturity = MATURITY_STABLE;

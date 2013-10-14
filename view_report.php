@@ -86,7 +86,7 @@ if ($useranswers = $DB->get_records_select("lesson_attempts",
                     $boxopen = true;
                     $nbessays ++;
                     echo '<h3>'.get_string('essayprompt', 'block_lesson_essay_feedback', $nbessays).'</h3><blockquote>';
-                    $context = get_context_instance(CONTEXT_MODULE, $PAGE->cm->id);
+                    $context = context_module::instance($PAGE->cm->id);
                     $contents = file_rewrite_pluginfile_urls($question->contents, 'pluginfile.php',
                         $context->id, 'mod_lesson', 'page_contents',
                     $question->id);

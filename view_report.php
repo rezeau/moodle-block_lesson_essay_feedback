@@ -121,7 +121,9 @@ if ($useranswers = $DB->get_records_select("lesson_attempts",
                     // Set rest of the message values.
                     $comment  = $essayinfo->response;
                     echo '<h5>'.get_string('graderscomments', 'block_lesson_essay_feedback').'</h5>';
-                    echo '<blockquote>'.$essayinfo->response.'</blockquote>';
+                    // Display grader's comment as MOODLE_FORMAT, pending fix allowing full HTML editor for grader's comments
+                    // https://tracker.moodle.org/browse/MDL-43387.
+                    echo '<blockquote>'.format_text($essayinfo->response, FORMAT_MOODLE).'</blockquote>';
                     echo '<p>'.get_string('score', 'block_lesson_essay_feedback', $a).'<br />';
                     echo ''.get_string('newgrade', 'block_lesson_essay_feedback', $newgrade).'</p>';
                 } else {

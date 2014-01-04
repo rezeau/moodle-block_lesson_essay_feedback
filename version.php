@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version  = 2013121400;
+$plugin->version  = 2014010400;
 $plugin->requires = 2013111800; // Moodle version.
 $plugin->component = 'block_lesson_essay_feedback';  // Full name of the plugin (used for diagnostics).
 $plugin->release = '2.6.1';

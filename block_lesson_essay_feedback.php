@@ -19,9 +19,11 @@
  *
  * @package    block
  * @subpackage lesson_essay_feedback
- * @copyright  Joseph R�zeau - moodle@rezeau.org
+ * @copyright  Joseph Rézeau - moodle@rezeau.org
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+defined('MOODLE_INTERNAL') || die();
 
 class block_lesson_essay_feedback extends block_base {
     public function init() {
@@ -90,6 +92,6 @@ class block_lesson_essay_feedback extends block_base {
     }
 
     public function applicable_formats() {
-        return array('all'=>true);
+        return array('all' => true);
     }
 }

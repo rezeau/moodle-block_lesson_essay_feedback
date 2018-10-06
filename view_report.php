@@ -30,7 +30,7 @@ require_once($CFG->dirroot.'/mod/lesson/pagetypes/essay.php');
 $cmid = required_param('cmid', PARAM_INT);      // Course Module ID.
 $lessonid = required_param('lessonid', PARAM_INT);      // lesson ID.
 
-$url = new moodle_url('/mod/lesson_essay_feedback/view_report.php', array('id'=>$cmid));
+$url = new moodle_url('/mod/lesson_essay_feedback/view_report.php', array('id' => $cmid));
 
 $PAGE->set_url($url);
 
@@ -38,11 +38,11 @@ if (! $cm = get_coursemodule_from_id('lesson', $cmid)) {
     print_error('invalidcoursemodule');
 }
 
-if (! $course = $DB->get_record("course", array("id"=>$cm->course))) {
+if (! $course = $DB->get_record("course", array("id" => $cm->course))) {
     print_error('coursemisconf');
 }
 
-if (! $lesson = $DB->get_record("lesson", array("id"=>$cm->instance))) {
+if (! $lesson = $DB->get_record("lesson", array("id" => $cm->instance))) {
     print_error('invalidid', 'lesson');
 }
 
@@ -70,7 +70,7 @@ if ($useranswers = $DB->get_records_select("lesson_attempts",
     $formattextdefoptions->para = false;
     $formattextdefoptions->context = $context;
 
-    $lessonretake = $DB->get_record_select("lesson", "id = $lessonid", null, $fields='retake');
+    $lessonretake = $DB->get_record_select("lesson", "id = $lessonid", null, $fields = 'retake');
     $i = 0; $nbessays = 0; $boxopen = false;
 
     // Get the current user's latest grade date for this lesson.
@@ -97,7 +97,7 @@ if ($useranswers = $DB->get_records_select("lesson_attempts",
                     $contents = file_rewrite_pluginfile_urls($question->contents, 'pluginfile.php',
                         $context->id, 'mod_lesson', 'page_contents',
                     $question->id);
-                    echo format_text($contents, $question->contentsformat, array('context'=>$context, 'noclean'=>true));
+                    echo format_text($contents, $question->contentsformat, array('context' => $context, 'noclean' => true));
                     echo '</blockquote>';
                 }
                 if ($lessonretake->retake) {
@@ -106,14 +106,15 @@ if ($useranswers = $DB->get_records_select("lesson_attempts",
                 echo '<h5>'.get_string('yourresponse', 'block_lesson_essay_feedback').'</h5>';
 
                 // Display student's answer exactly as it was typed in the HTML editor, including smileys, images, etc.
-                echo('<blockquote>'.format_text($essayinfo->answer, $essayinfo->answerformat, array('context'=>$context)).'</blockquote>');
+                echo('<blockquote>'.format_text($essayinfo->answer, $essayinfo->answerformat,
+                    array('context' => $context)).'</blockquote>');
                 if ($essayinfo->graded) {
                     $sql = 'SELECT score FROM '.$CFG->prefix.'lesson_answers WHERE pageid = '.$useranswer->pageid;
                     if ($score = $DB->get_record_sql($sql)) {
                         $maxscore = $score->score;
                     }
                     // Set the grade.
-                    $grades = $DB->get_records('lesson_grades', array("lessonid"=>$lesson->id, "userid"=>$userid),
+                    $grades = $DB->get_records('lesson_grades', array("lessonid" => $lesson->id, "userid" => $userid),
                         'completed', '*', $useranswer->retry, 1);
                     $grade  = current($grades);
                     $newgrade = $grade->grade;
@@ -133,7 +134,7 @@ if ($useranswers = $DB->get_records_select("lesson_attempts",
                         $comment = file_rewrite_pluginfile_urls($essayinfo->response, 'pluginfile.php',
                                 $context->id, 'mod_lesson', 'essay_responses', $useranswer->id);
                         $comment = format_text($comment, $essayinfo->responseformat, $formattextdefoptions);
-                }
+                    }
                     echo '<h5>'.get_string('graderscomments', 'block_lesson_essay_feedback').'</h5>';
                     // Display grader's comment as MOODLE_FORMAT, pending fix allowing full HTML editor for grader's comments
                     // https://tracker.moodle.org/browse/MDL-43387.

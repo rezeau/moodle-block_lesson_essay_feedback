@@ -25,6 +25,7 @@
 
 require_once("../../config.php");
 require_once($CFG->dirroot.'/mod/lesson/locallib.php');
+require_once($CFG->dirroot.'/mod/lesson/pagetypes/essay.php');
 
 $cmid = required_param('cmid', PARAM_INT);      // Course Module ID.
 $lessonid = required_param('lessonid', PARAM_INT);      // lesson ID.
@@ -62,6 +63,13 @@ echo $OUTPUT->heading(get_string('graderscommentsandscore', 'block_lesson_essay_
 
 if ($useranswers = $DB->get_records_select("lesson_attempts",
         "lessonid = $lessonid AND userid = $userid", null, 'pageid,timeseen ASC')) {
+
+    $context = context_module::instance($PAGE->cm->id);
+    $formattextdefoptions = new stdClass();
+    $formattextdefoptions->noclean = true;
+    $formattextdefoptions->para = false;
+    $formattextdefoptions->context = $context;
+
     $lessonretake = $DB->get_record_select("lesson", "id = $lessonid", null, $fields='retake');
     $i = 0; $nbessays = 0; $boxopen = false;
 
@@ -77,7 +85,7 @@ if ($useranswers = $DB->get_records_select("lesson_attempts",
         $sql = 'SELECT qtype, id, contents, contentsformat FROM '.$CFG->prefix.'lesson_pages WHERE id = '.$useranswer->pageid;
         if ($question = $DB->get_record_sql($sql)) {
             if ($question->qtype == 10) {
-                $essayinfo = unserialize ($useranswer->useranswer);
+                $essayinfo = lesson_page_type_essay::extract_useranswer($useranswer->useranswer);
                 if ($useranswer->retry == 0) {
                     if ($boxopen) {
                         echo $OUTPUT->box_end('generalbox');
@@ -86,7 +94,6 @@ if ($useranswers = $DB->get_records_select("lesson_attempts",
                     $boxopen = true;
                     $nbessays ++;
                     echo '<h3>'.get_string('essayprompt', 'block_lesson_essay_feedback', $nbessays).'</h3><blockquote>';
-                    $context = context_module::instance($PAGE->cm->id);
                     $contents = file_rewrite_pluginfile_urls($question->contents, 'pluginfile.php',
                         $context->id, 'mod_lesson', 'page_contents',
                     $question->id);
@@ -97,8 +104,9 @@ if ($useranswers = $DB->get_records_select("lesson_attempts",
                     echo '<h4>'.get_string('attempt', 'lesson', $useranswer->retry + 1).'</h4>';
                 }
                 echo '<h5>'.get_string('yourresponse', 'block_lesson_essay_feedback').'</h5>';
+
                 // Display student's answer exactly as it was typed in the HTML editor, including smileys, images, etc.
-                echo('<blockquote>'.format_text($essayinfo->answer, FORMAT_HTML).'</blockquote>');
+                echo('<blockquote>'.format_text($essayinfo->answer, $essayinfo->answerformat, array('context'=>$context)).'</blockquote>');
                 if ($essayinfo->graded) {
                     $sql = 'SELECT score FROM '.$CFG->prefix.'lesson_answers WHERE pageid = '.$useranswer->pageid;
                     if ($score = $DB->get_record_sql($sql)) {
@@ -119,11 +127,17 @@ if ($useranswers = $DB->get_records_select("lesson_attempts",
                         $a->outof  = 1;
                     }
                     // Set rest of the message values.
-                    $comment  = $essayinfo->response;
+                    if ($essayinfo->response == null) {
+                        $comment = get_string('nocommentyet', 'lesson');
+                    } else {
+                        $comment = file_rewrite_pluginfile_urls($essayinfo->response, 'pluginfile.php',
+                                $context->id, 'mod_lesson', 'essay_responses', $useranswer->id);
+                        $comment = format_text($comment, $essayinfo->responseformat, $formattextdefoptions);
+                }
                     echo '<h5>'.get_string('graderscomments', 'block_lesson_essay_feedback').'</h5>';
                     // Display grader's comment as MOODLE_FORMAT, pending fix allowing full HTML editor for grader's comments
                     // https://tracker.moodle.org/browse/MDL-43387.
-                    echo '<blockquote>'.format_text($essayinfo->response, FORMAT_MOODLE).'</blockquote>';
+                    echo '<blockquote>'.$comment.'</blockquote>';
                     echo '<p>'.get_string('score', 'block_lesson_essay_feedback', $a).'<br />';
                     echo ''.get_string('newgrade', 'block_lesson_essay_feedback', $newgrade).'</p>';
                 } else {

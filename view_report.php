@@ -17,15 +17,13 @@
 /**
  * Version details
  *
- * @package    block
- * @subpackage lesson_essay_feedback
+ * @package    block_lesson_essay_feedback
  * @copyright  Joseph R�zeau - moodle@rezeau.org
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once("../../config.php");
 require_once($CFG->dirroot.'/mod/lesson/locallib.php');
-require_once($CFG->dirroot.'/mod/lesson/pagetypes/essay.php');
 
 $cmid = required_param('cmid', PARAM_INT);      // Course Module ID.
 $lessonid = required_param('lessonid', PARAM_INT);      // lesson ID.
@@ -85,7 +83,11 @@ if ($useranswers = $DB->get_records_select("lesson_attempts",
         $sql = 'SELECT qtype, id, contents, contentsformat FROM '.$CFG->prefix.'lesson_pages WHERE id = '.$useranswer->pageid;
         if ($question = $DB->get_record_sql($sql)) {
             if ($question->qtype == 10) {
-                $essayinfo = lesson_page_type_essay::extract_useranswer($useranswer->useranswer);
+                $essayinfo = unserialize($useranswer->useranswer);
+                if (!isset($essayinfo->responseformat)) {
+                    $essayinfo->response = text_to_html($essayinfo->response, false, false);
+                    $essayinfo->responseformat = FORMAT_HTML;
+                }
                 if ($useranswer->retry == 0) {
                     if ($boxopen) {
                         echo $OUTPUT->box_end('generalbox');

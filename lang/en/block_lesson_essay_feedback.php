@@ -17,8 +17,7 @@
 /**
  * Strings for component 'lesson_essay_feedback', language 'en', branch 'MOODLE_25_STABLE'
  *
- * @package    block
- * @subpackage lesson_essay_feedback
+ * @package    block_lesson_essay_feedback
  * @copyright  Joseph Rézeau - moodle@rezeau.org
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

@@ -24,11 +24,26 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Block activity_results class definition.
+ *
+ * This block can be added to a course page or an activity page to enable a student
+ * to view the teacher's comments and grade given to a lesson graded essay.
+ *
+ */
 class block_lesson_essay_feedback extends block_base {
+
+    /**
+     * Core function used to initialize the block.
+     */
     public function init() {
         $this->title = get_string('pluginname', 'block_lesson_essay_feedback');
     }
 
+    /**
+     * Used to generate the content for the block.
+     * @return string
+     */
     public function get_content() {
         global $USER, $CFG, $DB;
 
@@ -86,10 +101,18 @@ class block_lesson_essay_feedback extends block_base {
         return $this->content;
     }
 
+    /**
+     * Allows the block to be added multiple times to a single page
+     * @return boolean
+     */
     public function instance_allow_multiple() {
         return false;
     }
 
+    /**
+     * Core function, specifies where the block can be used.
+     * @return array
+     */
     public function applicable_formats() {
         return array('all' => true);
     }

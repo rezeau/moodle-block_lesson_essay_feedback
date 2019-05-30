@@ -108,7 +108,9 @@ if ($useranswers = $DB->get_records_select("lesson_attempts",
                 echo '<h5>'.get_string('yourresponse', 'block_lesson_essay_feedback').'</h5>';
 
                 // Display student's answer exactly as it was typed in the HTML editor, including smileys, images, etc.
-                echo('<blockquote>'.format_text($essayinfo->answer, $essayinfo->answerformat,
+                $answer = file_rewrite_pluginfile_urls($essayinfo->answer, 'pluginfile.php', $context->id,
+                    'mod_lesson', 'essay_answers', $useranswer->id);
+                echo('<blockquote>'.format_text($answer, $essayinfo->answerformat,
                     array('context' => $context)).'</blockquote>');
                 if ($essayinfo->graded) {
                     $sql = 'SELECT score FROM '.$CFG->prefix.'lesson_answers WHERE pageid = '.$useranswer->pageid;

@@ -28,4 +28,4 @@ $plugin->version   = 2019052901;        // The current plugin version (Date: YYY
 $plugin->requires  = 2014050800;        // Requires this Moodle version
 $plugin->component = 'block_lesson_essay_feedback';  // Full name of the plugin (used for diagnostics).
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = '3.7.0 for moodle 3.7';
+$plugin->release = '3.8.0 for moodle 3.8';

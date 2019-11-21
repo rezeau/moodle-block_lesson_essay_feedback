@@ -15,7 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details
+ * Lesson essay feedback block.
+ *
+ * This block can be added to a course page or an activity page to enable a student
+ * to view the teacher's comments and grade given to a lesson graded essay.
  *
  * @package    block_lesson_essay_feedback
  * @copyright  Joseph Rézeau - moodle@rezeau.org
@@ -24,13 +27,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-/**
- * Block activity_results class definition.
- *
- * This block can be added to a course page or an activity page to enable a student
- * to view the teacher's comments and grade given to a lesson graded essay.
- *
- */
 class block_lesson_essay_feedback extends block_base {
 
     /**

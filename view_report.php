@@ -87,7 +87,7 @@ if ($useranswers = $DB->get_records_select("lesson_attempts",
                 if (!isset($essayinfo->responseformat)) {
                     $essayinfo->response = text_to_html($essayinfo->response, false, false);
                     $essayinfo->responseformat = FORMAT_HTML;
-                }
+                }                          
                 if ($useranswer->retry == 0) {
                     if ($boxopen) {
                         echo $OUTPUT->box_end('generalbox');
@@ -162,6 +162,8 @@ if ($useranswers = $DB->get_records_select("lesson_attempts",
         $i++;
         $oldretry = $useranswer->retry;
     }
-    echo $OUTPUT->box_end('generalbox');
+    if ($boxopen) {
+      echo $OUTPUT->box_end('generalbox');
+    }
 }
 echo $OUTPUT->footer();

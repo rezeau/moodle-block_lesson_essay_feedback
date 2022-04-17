@@ -27,6 +27,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Lesson essay feedback block.
+ *
+ * This block can be added to a course page or an activity page to enable a student
+ * to view the teacher's comments and grade given to a lesson graded essay.
+ */
 class block_lesson_essay_feedback extends block_base {
 
     /**
@@ -71,7 +77,7 @@ class block_lesson_essay_feedback extends block_base {
                             if ($record = $DB->get_record_sql($sql)) {
                                 if ($record->qtype == 10) {
                                     if (!in_array($lessonid, $lessonidhasessays)) {
-                                        $lessonidhasessays [] = $lessonid;
+                                        $lessonidhasessays[] = $lessonid;
                                         $a = new stdClass();
                                         $a->lessonname = $lessons[$lessonid];
                                         $a->nbessaysinlesson = $nbessaysinlesson;

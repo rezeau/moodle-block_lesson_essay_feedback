@@ -26,22 +26,22 @@ require_once("../../config.php");
 require_once($CFG->dirroot.'/mod/lesson/locallib.php');
 
 $cmid = required_param('cmid', PARAM_INT);      // Course Module ID.
-$lessonid = required_param('lessonid', PARAM_INT);      // lesson ID.
+$lessonid = required_param('lessonid', PARAM_INT);      // Lesson ID.
 
 $url = new moodle_url('/mod/lesson_essay_feedback/view_report.php', array('id' => $cmid));
 
 $PAGE->set_url($url);
 
 if (! $cm = get_coursemodule_from_id('lesson', $cmid)) {
-    print_error('invalidcoursemodule');
+    throw new moodle_exception('invalidcoursemodule');
 }
 
 if (! $course = $DB->get_record("course", array("id" => $cm->course))) {
-    print_error('coursemisconf');
+    throw new moodle_exception('coursemisconf');
 }
 
 if (! $lesson = $DB->get_record("lesson", array("id" => $cm->instance))) {
-    print_error('invalidid', 'lesson');
+    throw new moodle_exception('invalidid', 'lesson');
 }
 
 require_login($course->id, false, $cm);
@@ -87,7 +87,7 @@ if ($useranswers = $DB->get_records_select("lesson_attempts",
                 if (!isset($essayinfo->responseformat)) {
                     $essayinfo->response = text_to_html($essayinfo->response, false, false);
                     $essayinfo->responseformat = FORMAT_HTML;
-                }                          
+                }
                 if ($useranswer->retry == 0) {
                     if ($boxopen) {
                         echo $OUTPUT->box_end('generalbox');
@@ -163,7 +163,7 @@ if ($useranswers = $DB->get_records_select("lesson_attempts",
         $oldretry = $useranswer->retry;
     }
     if ($boxopen) {
-      echo $OUTPUT->box_end('generalbox');
+        echo $OUTPUT->box_end('generalbox');
     }
 }
 echo $OUTPUT->footer();

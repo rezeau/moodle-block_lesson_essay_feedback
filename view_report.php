@@ -28,7 +28,7 @@ require_once($CFG->dirroot.'/mod/lesson/locallib.php');
 $cmid = required_param('cmid', PARAM_INT);      // Course Module ID.
 $lessonid = required_param('lessonid', PARAM_INT);      // Lesson ID.
 
-$url = new moodle_url('/mod/lesson_essay_feedback/view_report.php', array('id' => $cmid));
+$url = new moodle_url('/mod/lesson_essay_feedback/view_report.php', ['id' => $cmid]);
 
 $PAGE->set_url($url);
 
@@ -36,11 +36,11 @@ if (! $cm = get_coursemodule_from_id('lesson', $cmid)) {
     throw new moodle_exception('invalidcoursemodule');
 }
 
-if (! $course = $DB->get_record("course", array("id" => $cm->course))) {
+if (! $course = $DB->get_record("course", ["id" => $cm->course])) {
     throw new moodle_exception('coursemisconf');
 }
 
-if (! $lesson = $DB->get_record("lesson", array("id" => $cm->instance))) {
+if (! $lesson = $DB->get_record("lesson", ["id" => $cm->instance])) {
     throw new moodle_exception('invalidid', 'lesson');
 }
 
@@ -49,7 +49,7 @@ global $USER, $CFG, $DB;
 $userid = $USER->id;
 
 $PAGE->navbar->ignore_active();
-$PAGE->navbar->add($course->fullname, new moodle_url('/course/view.php', array('id' => $course->id)));
+$PAGE->navbar->add($course->fullname, new moodle_url('/course/view.php', ['id' => $course->id]));
 $PAGE->navbar->add($lesson->name);
 $PAGE->navbar->add(get_string('graderscommentsandscore', 'block_lesson_essay_feedback'));
 
@@ -73,7 +73,7 @@ if ($useranswers = $DB->get_records_select("lesson_attempts",
 
     // Get the current user's latest grade date for this lesson.
     // To find out if there is currently one attempt pending in an unfinished lesson.
-    $params = array ("userid" => $USER->id, "lessonid" => $lesson->id);
+    $params = ["userid" => $USER->id, "lessonid" => $lesson->id];
     if ($rs = $DB->get_record_sql('SELECT MAX(completed) AS lastgraded FROM {lesson_grades} WHERE userid = :userid
             AND lessonid = :lessonid ', $params)) {
             $lastgraded = $rs->lastgraded;
@@ -99,7 +99,7 @@ if ($useranswers = $DB->get_records_select("lesson_attempts",
                     $contents = file_rewrite_pluginfile_urls($question->contents, 'pluginfile.php',
                         $context->id, 'mod_lesson', 'page_contents',
                     $question->id);
-                    echo format_text($contents, $question->contentsformat, array('context' => $context, 'noclean' => true));
+                    echo format_text($contents, $question->contentsformat, ['context' => $context, 'noclean' => true]);
                     echo '</blockquote>';
                 }
                 if ($lessonretake->retake) {
@@ -111,14 +111,14 @@ if ($useranswers = $DB->get_records_select("lesson_attempts",
                 $answer = file_rewrite_pluginfile_urls($essayinfo->answer, 'pluginfile.php', $context->id,
                     'mod_lesson', 'essay_answers', $useranswer->id);
                 echo('<blockquote>'.format_text($answer, $essayinfo->answerformat,
-                    array('context' => $context)).'</blockquote>');
+                    ['context' => $context]).'</blockquote>');
                 if ($essayinfo->graded) {
                     $sql = 'SELECT score FROM '.$CFG->prefix.'lesson_answers WHERE pageid = '.$useranswer->pageid;
                     if ($score = $DB->get_record_sql($sql)) {
                         $maxscore = $score->score;
                     }
                     // Set the grade.
-                    $grades = $DB->get_records('lesson_grades', array("lessonid" => $lesson->id, "userid" => $userid),
+                    $grades = $DB->get_records('lesson_grades', ["lessonid" => $lesson->id, "userid" => $userid],
                         'completed', '*', $useranswer->retry, 1);
                     $grade  = current($grades);
                     $newgrade = $grade->grade;

@@ -25,8 +25,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Lesson essay feedback block.
  *
@@ -62,9 +60,9 @@ class block_lesson_essay_feedback extends block_base {
         }
 
         $userid = $USER->id;
-        $lessons = $DB->get_records_menu('lesson', array('course' => $this->page->course->id), '', 'id, name');
+        $lessons = $DB->get_records_menu('lesson', ['course' => $this->page->course->id], '', 'id, name');
         if (!empty($lessons) ) {
-            $lessonidhasessays = array();
+            $lessonidhasessays = [];
             foreach ($lessons as $lessonid => $id) {
                 $select = 'lessonid = '.$lessonid.' AND qtype = 10';
                 $nbessaysinlesson = $DB->count_records_select('lesson_pages', $select);
@@ -116,6 +114,6 @@ class block_lesson_essay_feedback extends block_base {
      * @return array
      */
     public function applicable_formats() {
-        return array('all' => true);
+        return ['all' => true];
     }
 }

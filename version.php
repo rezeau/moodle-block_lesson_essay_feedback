@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2024100800;
+$plugin->version   = 2025041900;
 $plugin->requires  = 2014050800;
 $plugin->component = 'block_lesson_essay_feedback';
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = '4.5';
+$plugin->release = '5.0';
